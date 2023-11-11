@@ -14,13 +14,13 @@ use std::io::{stdin, stdout, Read};
 use std::process::exit;
 
 use serde_json as json;
-use serde_pickle as pickle;
+use serde_pickle_rs as pickle;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = env::args().collect::<Vec<_>>();
     if args.len() < 2 {
         println!("Usage: pickle (decode | transcode | to_json | from_json) [filename]");
-        println!("");
+        println!();
         println!("Input is either given file or stdin.");
         println!("decode:    decode and display pickle");
         println!("transcode: decode and re-encode pickle");

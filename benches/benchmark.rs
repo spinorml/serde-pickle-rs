@@ -1,9 +1,6 @@
-#![cfg(feature = "criterion-bench")]
-
 use byteorder::{LittleEndian, WriteBytesExt};
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use serde_pickle;
-use serde_pickle::*;
+use serde_pickle_rs::*;
 use std::collections::BTreeMap;
 use std::io::Read;
 
@@ -99,9 +96,7 @@ fn unpickle_nested_list(c: &mut Criterion) {
         buffer.extend(b"]r");
         buffer.write_u32::<LittleEndian>(i).unwrap();
     }
-    for _ in 0..100 {
-        buffer.push(b'a');
-    }
+    buffer.resize(100, b'a');
     buffer.push(b'.');
 
     c.bench_function("unpickle_nested_list", |b| {
@@ -115,9 +110,7 @@ fn unpickle_nested_list_no_memo(c: &mut Criterion) {
     for _ in 0..201 {
         buffer.extend(b"]");
     }
-    for _ in 0..200 {
-        buffer.push(b'a');
-    }
+    buffer.resize(200, b'a');
     buffer.push(b'.');
 
     c.bench_function("unpickle_nested_list_no_memo", |b| {
@@ -170,9 +163,9 @@ fn bench_picklefile(c: &mut Criterion, filename: &str) {
     // Run the benchmark
     c.bench_function(filename, |b| {
         b.iter(|| {
-            serde_pickle::de::value_from_slice(
+            serde_pickle_rs::de::value_from_slice(
                 black_box(&contents),
-                serde_pickle::de::DeOptions::new(),
+                serde_pickle_rs::de::DeOptions::new(),
             )
             .unwrap()
         })
