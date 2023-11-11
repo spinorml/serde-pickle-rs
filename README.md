@@ -19,7 +19,7 @@ This crate works with Cargo and can be found on
 ```toml
 [dependencies]
 serde = "1.0.192"
-serde-pickle-rs = "1.0.0"
+serde-pickle-rs = "1.0.1"
 ```
 
 # Requirements
