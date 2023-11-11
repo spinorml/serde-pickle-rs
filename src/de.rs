@@ -68,6 +68,8 @@ enum Value {
     Set(Vec<Value>),
     FrozenSet(Vec<Value>),
     Dict(Vec<(Value, Value)>),
+    BinPersId(Box<Value>),
+    PersId(Box<Value>),
 }
 
 /// Options for deserializing.
@@ -506,6 +508,16 @@ impl<R: Read> Deserializer<R> {
                     let state = self.pop()?;
                     self.pop()?; // remove the object standin
                     self.stack.push(state);
+                }
+
+                PERSID => {
+                    let pers_id = self.pop()?;
+                    self.stack.push(Value::BinPersId(Box::new(pers_id)));
+                }
+
+                BINPERSID => {
+                    let binpers_id = self.pop()?;
+                    self.stack.push(Value::BinPersId(Box::new(binpers_id)));
                 }
 
                 // Unsupported opcodes
@@ -1117,6 +1129,8 @@ impl<R: Read> Deserializer<R> {
                     Err(Error::Syntax(ErrorCode::UnresolvedGlobal))
                 }
             }
+            Value::PersId(id) => Ok(value::Value::PersId(Box::new(self.convert_value(*id)?))),
+            Value::BinPersId(id) => Ok(value::Value::BinPersId(Box::new(self.convert_value(*id)?))),
         }
     }
 }
@@ -1182,6 +1196,8 @@ impl<'de: 'a, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
                     Err(Error::Syntax(ErrorCode::UnresolvedGlobal))
                 }
             }
+            Value::PersId(_) => todo!("persid"),
+            Value::BinPersId(_) => todo!("binpersid"),
         }
     }
 

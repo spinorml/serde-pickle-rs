@@ -158,6 +158,8 @@ impl<W: io::Write> Serializer<W> {
             Value::Tuple(ref t) => self.serialize_tuplevalue(t, |slf, v| slf.serialize_value(v)),
             Value::Set(ref s) => self.serialize_set(s, b"set"),
             Value::FrozenSet(ref s) => self.serialize_set(s, b"frozenset"),
+            Value::PersId(_) => todo!("persid"),
+            Value::BinPersId(_) => todo!("binpersid"),
         }
     }
 

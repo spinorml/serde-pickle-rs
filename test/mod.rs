@@ -309,6 +309,7 @@ mod value_tests {
     use rand::{thread_rng, RngCore};
     use std::collections::{BTreeMap, BTreeSet};
     use std::fs::File;
+    use std::hash::Hash;
     use std::iter::FromIterator;
 
     // combinations of (python major, pickle proto) to test
@@ -459,5 +460,16 @@ mod value_tests {
         let serde_val: serde_json::Value =
             from_slice(&data, DeOptions::new().replace_unresolved_globals()).unwrap();
         assert_eq!(serde_val, serde_json::Value::Null);
+    }
+
+    #[test]
+    fn read_binpersid() {
+        let data = std::fs::read("test/data/persistent_id.pickle").unwrap();
+        let val = value_from_slice(&data, DeOptions::new().replace_unresolved_globals()).unwrap();
+        let map: BTreeMap<_, _> = BTreeMap::from_iter(vec![(
+            HashableValue::String("bar".to_string()),
+            Value::BinPersId(Box::new(Value::String("it's a bar".to_string()))),
+        )]);
+        assert_eq!(val, Value::Dict(map));
     }
 }
