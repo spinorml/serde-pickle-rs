@@ -464,7 +464,8 @@ mod value_tests {
 
     #[test]
     fn read_binpersid() {
-        let data = std::fs::read("test/data/persistent_id.pickle").unwrap();
+        let data = std::fs::read("/Volumes/ALLADIN2/consolidated.00.pth").unwrap();
+        // let data = std::fs::read("test/data/persistent_id.pickle").unwrap();
         let val = value_from_slice(&data, DeOptions::new().replace_unresolved_globals()).unwrap();
         let map: BTreeMap<_, _> = BTreeMap::from_iter(vec![(
             HashableValue::String("bar".to_string()),

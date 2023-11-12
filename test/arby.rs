@@ -104,6 +104,7 @@ impl Arbitrary for Value {
             Value::Set(ref v) => Box::new(Arbitrary::shrink(v).map(Value::Set)),
             Value::FrozenSet(ref v) => Box::new(Arbitrary::shrink(v).map(Value::FrozenSet)),
             Value::Dict(ref v) => Box::new(Arbitrary::shrink(v).map(Value::Dict)),
+            Value::Global(_) => todo!("shrink global"),
             Value::PersId(_) => todo!("shrink persid"),
             Value::BinPersId(_) => todo!("shrink binpersid"),
         }

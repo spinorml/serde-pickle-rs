@@ -281,6 +281,7 @@ impl<'de: 'a, 'a> de::Deserializer<'de> for &'a mut Deserializer {
                     len,
                 })
             }
+            Value::Global(_) => todo!("global"),
             Value::PersId(_) => todo!("persid"),
             Value::BinPersId(_) => todo!("binpersid"),
         }

@@ -50,6 +50,8 @@ pub enum Value {
     FrozenSet(BTreeSet<HashableValue>),
     /// Dictionary (map)
     Dict(BTreeMap<HashableValue, Value>),
+    /// Global reference
+    Global(String),
     /// Persistent ID
     PersId(Box<Value>),
     /// BinPersistent Id
@@ -185,6 +187,7 @@ impl fmt::Display for Value {
                 }
                 write!(f, "}}")
             }
+            Value::Global(_) => todo!("global"),
             Value::PersId(_) => todo!("persid"),
             Value::BinPersId(_) => todo!("binpersid"),
         }

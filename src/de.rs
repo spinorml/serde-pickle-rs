@@ -200,7 +200,9 @@ impl<R: Read> Deserializer<R> {
     /// pickle until the STOP opcode.
     fn parse_value(&mut self) -> Result<Value> {
         loop {
-            match self.read_byte()? {
+            let byte = self.read_byte()?;
+            println!("byte: {}", byte);
+            match byte {
                 // Specials
                 PROTO => {
                     // Ignore this, as it is only important for instances (read
@@ -511,8 +513,10 @@ impl<R: Read> Deserializer<R> {
                 }
 
                 PERSID => {
-                    let pers_id = self.pop()?;
-                    self.stack.push(Value::BinPersId(Box::new(pers_id)));
+                    let line = self.read_line()?;
+                    println!("PERSID: {:?}", line);
+                    let bytes = Value::Bytes(line);
+                    self.stack.push(Value::BinPersId(Box::new(bytes)));
                 }
 
                 BINPERSID => {
@@ -1122,13 +1126,7 @@ impl<R: Read> Deserializer<R> {
             Value::MemoRef(memo_id) => {
                 self.resolve_recursive(memo_id, (), |slf, (), value| slf.convert_value(value))
             }
-            Value::Global(_) => {
-                if self.options.replace_unresolved_globals {
-                    Ok(value::Value::None)
-                } else {
-                    Err(Error::Syntax(ErrorCode::UnresolvedGlobal))
-                }
-            }
+            Value::Global(g) => Ok(value::Value::Global(format!("{:?}", g))),
             Value::PersId(id) => Ok(value::Value::PersId(Box::new(self.convert_value(*id)?))),
             Value::BinPersId(id) => Ok(value::Value::BinPersId(Box::new(self.convert_value(*id)?))),
         }
